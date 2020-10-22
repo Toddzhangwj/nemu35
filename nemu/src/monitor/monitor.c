@@ -1,5 +1,6 @@
 #include "nemu.h"
-#include "memory.h"
+#include "memory/cache.h"
+#include "memory/tlb.h"
 
 #define ENTRY_START 0x100000
 
@@ -11,7 +12,6 @@ void load_elf_tables(int, char *[]);
 void init_regex();
 void init_wp_pool();
 void init_ddr3();
-void init_cache();
 
 FILE *log_fp = NULL;
 
@@ -23,11 +23,6 @@ static void init_log() {
 static void welcome() {
 	printf("Welcome to NEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
 			exec_file);
-}
-
-static void init_cr0() {
-	cpu.cr0.protect_enable = 0;
-	cpu.cr0.paging = 0;
 }
 
 void init_monitor(int argc, char *argv[]) {
@@ -86,7 +81,6 @@ void restart() {
 #ifdef USE_RAMDISK
 	/* Read the file with name `argv[1]' into ramdisk. */
 	init_ramdisk();
-	init_cache();
 #endif
 
 	/* Read the entry code into memory. */
@@ -94,15 +88,20 @@ void restart() {
 
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
-    cpu.eflags.val = 0x2;
+	cpu.CF = 1;
+	cpu.PF = cpu.ZF = cpu.SF = cpu.IF = cpu.DF = cpu.OF = 0;
+	cpu.cr0.val = cpu.cr3.val = 0;
+
 	cpu.cs.cache.base = 0;
 	cpu.cs.cache.limit = 0xffffffff;
-	/*Initialize CR0*/
-	init_cr0();
 
-    /*Initialize Cache*/
-	init_cache();
-	
+//	cpu.cr3.page_directory_base = 0x137;
+//	cpu.PE = 1;
+
 	/* Initialize DRAM. */
 	init_ddr3();
+
+	/* Initialize Cache. */
+	resetCache();
+	resetTLB();
 }

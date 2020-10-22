@@ -25,3 +25,12 @@ struct Cache
 	int tag;
 	uint8_t data[BLOCK_SIZE];
 }cache[STORAGE_SIZE_L1/BLOCK_SIZE];
+
+struct SecondaryCache
+{
+	bool valid,dirty;
+	int tag;
+	uint8_t data[BLOCK_SIZE];
+}cache2[STORAGE_SIZE_L2/BLOCK_SIZE];
+
+

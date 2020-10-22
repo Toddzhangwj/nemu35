@@ -129,3 +129,20 @@ uint32_t cache_read(hwaddr_t addr)
 	}
 	return i;
 }
+void secondarycache_write(hwaddr_t addr, size_t len,uint32_t data) {
+	uint32_t g = (addr >> 6) & ((1<<12) - 1);  //group number
+	uint32_t offset = addr & (BLOCK_SIZE - 1); // inside addr
+	int i;
+	bool v = false;
+	for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+	{
+		if (cache2[i].tag == (addr >> 13)&& cache2[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (!v)i = secondarycache_read (addr);
+	cache2[i].dirty = true;
+	memcpy (cache2[i].data + offset , &data , len);
+}

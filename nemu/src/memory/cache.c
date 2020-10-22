@@ -146,3 +146,22 @@ void secondarycache_write(hwaddr_t addr, size_t len,uint32_t data) {
 	cache2[i].dirty = true;
 	memcpy (cache2[i].data + offset , &data , len);
 }
+void cache_write(hwaddr_t addr, size_t len,uint32_t data) {
+	uint32_t g = (addr>>6) & 0x7f; //group number
+	uint32_t offset = addr & (BLOCK_SIZE - 1); // inside addr
+	int i;
+	bool v = false;
+	for (i = g * EIGHT_WAY ; i < (g + 1) * EIGHT_WAY ;i ++)
+	{
+		if (cache[i].tag == (addr >> 13)&& cache[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (v)
+	{
+		memcpy (cache[i].data + offset , &data , len);
+	}
+	secondarycache_write(addr,len,data);
+}

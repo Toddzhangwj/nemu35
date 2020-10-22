@@ -96,3 +96,36 @@ uint32_t secondarycache_read(hwaddr_t addr)
 	return i;
 }
 
+uint32_t cache_read(hwaddr_t addr) 
+{
+	uint32_t g = (addr>>6) & 0x7f; //group number
+	//uint32_t block = (addr >> 6)<<6;
+	int i;
+	bool v = false;
+	for (i = g * EIGHT_WAY ; i < (g + 1) * EIGHT_WAY ;i ++)
+	{
+		if (cache[i].tag == (addr >> 13)&& cache[i].valid)
+			{
+				v = true;
+				// time_count += 2;
+				break;
+			}
+	}
+	if (!v)
+	{
+		int j = secondarycache_read (addr);
+		for (i = g * EIGHT_WAY ; i < (g+1) * EIGHT_WAY ;i ++)
+		{
+			if (!cache[i].valid)break;
+		}
+		if (i == (g + 1) * EIGHT_WAY)//ramdom
+		{
+			srand (0);
+			i = g * EIGHT_WAY + rand() % EIGHT_WAY;
+		}
+		cache[i].valid = true;
+		cache[i].tag = addr >> 13;
+		memcpy (cache[i].data,cache2[j].data,BLOCK_SIZE);
+	}
+	return i;
+}

@@ -18,3 +18,10 @@ int is_mmio(hwaddr_t);
 uint32_t mmio_read(hwaddr_t, size_t, int);
 void mmio_write(hwaddr_t, size_t, uint32_t, int);
 CPU_state cpu;
+
+struct Cache
+{
+	bool valid;
+	int tag;
+	uint8_t data[BLOCK_SIZE];
+}cache[STORAGE_SIZE_L1/BLOCK_SIZE];

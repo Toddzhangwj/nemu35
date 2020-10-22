@@ -33,4 +33,22 @@ struct SecondaryCache
 	uint8_t data[BLOCK_SIZE];
 }cache2[STORAGE_SIZE_L2/BLOCK_SIZE];
 
+void init_cache()
+{
+	int i;
+	// time_count = 0;
+	for (i = 0;i < STORAGE_SIZE_L1/BLOCK_SIZE;i ++)
+	{
+		cache[i].valid = false;
+		cache[i].tag = 0;
+		memset (cache[i].data,0,BLOCK_SIZE);
+	}
+	for (i = 0;i < STORAGE_SIZE_L2/BLOCK_SIZE;i ++)
+	{
+		cache2[i].valid = false;
+		cache2[i].dirty = false;
+		cache2[i].tag = 0;
+		memset (cache2[i].data,0,BLOCK_SIZE);
+	}
+}
 

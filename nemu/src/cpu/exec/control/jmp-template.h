@@ -21,11 +21,10 @@ make_helper(ljmp) {
 	cpu.eip = op1;
 	cpu.cs.val = op2;
 
-	//loadSregCache(R_CS);
+	loadSregCache(R_CS);
 
 	print_asm("ljmp %x,0x%x", op2, op1 + 7);
 	return 7;
 }
-
 #endif
 #include "cpu/exec/template-end.h"

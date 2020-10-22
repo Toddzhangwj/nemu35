@@ -52,3 +52,47 @@ void init_cache()
 	}
 }
 
+uint32_t secondarycache_read(hwaddr_t addr) 
+{
+	uint32_t g = (addr >> 6) & ((1<<12) - 1); //group number
+	uint32_t block = (addr >> 6)<<6;
+	int i;
+	bool v = false;
+	for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+	{
+		if (cache2[i].tag == (addr >> 18)&& cache2[i].valid)
+			{
+				v = true;
+				// time_count += 20;
+				break;
+			}
+	}
+	if (!v)
+	{
+		int j;
+		//time_count += 200;
+		for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+		{
+			if (!cache2[i].valid)break;
+		}
+		if (i == (g + 1) * SIXTEEN_WAY)//ramdom
+		{
+			srand (0);
+			i = g * SIXTEEN_WAY + rand() % SIXTEEN_WAY;
+			if (cache2[i].dirty)
+			{
+				uint8_t mask[BURST_LEN * 2];
+				memset(mask, 1, BURST_LEN * 2);
+				for (j = 0;j < BLOCK_SIZE/BURST_LEN;j ++)
+				ddr3_write(block + j * BURST_LEN, cache2[i].data + j * BURST_LEN, mask);
+			}
+		}
+		cache2[i].valid = true;
+		cache2[i].tag = addr >> 18;
+		cache2[i].dirty = false;
+		for (j = 0;j < BURST_LEN;j ++)
+		ddr3_read(block + j * BURST_LEN , cache2[i].data + j * BURST_LEN);
+	}
+	return i;
+}
+

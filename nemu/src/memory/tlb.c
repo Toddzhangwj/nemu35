@@ -16,16 +16,16 @@ void resetTLB() {
 }
 
 void writeTLB(uint32_t tg, uint32_t page) {
-	int i;
-	for(i = 0; i < TLB_SIZE; i++) {
-		if(!tlb[i].valid) {
-			tlb[i].valid = true;
-			tlb[i].tag = tg;
-			tlb[i].page = page;
-			return;
-		}
-	}
-	i = rand() % TLB_SIZE;
+	// int i;
+	// for(i = 0; i < TLB_SIZE; i++) {
+	// 	if(!tlb[i].valid) {
+	// 		tlb[i].valid = true;
+	// 		tlb[i].tag = tg;
+	// 		tlb[i].page = page;
+	// 		return;
+	// 	}
+	// }
+	// i = rand() % TLB_SIZE;
 	// tlb[i].valid = true;
 	// tlb[i].tag = tg;
 	// tlb[i].page = page;

@@ -27,7 +27,7 @@ void writeTLB(uint32_t tg, uint32_t page) {
 	}
 	i = rand() % TLB_SIZE;
 	tlb[i].valid = true;
-	//tlb[i].tag = tg;
+	tlb[i].tag = tg;
 	//tlb[i].page = page;
 	return;
 }

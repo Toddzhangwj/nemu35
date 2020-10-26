@@ -8,10 +8,10 @@ uint32_t readTLB(uint32_t tg) {
 	return -1;//invalid
 }
 void resetTLB() {
-	// int i;
-	// for(i = 0; i < TLB_SIZE; i++) {
-	// 	tlb[i].valid = false;
-	// }
+	int i;
+	for(i = 0; i < TLB_SIZE; i++) {
+		tlb[i].valid = false;
+	}
 
 }
 

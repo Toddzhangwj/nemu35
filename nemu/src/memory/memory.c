@@ -74,7 +74,7 @@ void loadSregCache(uint8_t sreg) {
 	sdp.second = lnaddr_read(gdt + 4, 4);
 	uint32_t base = (((uint32_t)sdp.base2) << 16) | sdp.base1 | (((uint32_t)sdp.base3) << 24);
 	uint32_t limit = (((uint32_t)sdp.limit2) << 16) | sdp.limit1;
-	printf("%d\n", limit);
+	//printf("%d\n", limit);
 	if(sdp.g) limit <<= 12;
 	cpu.sr[sreg].cache.limit = limit;
 	cpu.sr[sreg].cache.base = base;

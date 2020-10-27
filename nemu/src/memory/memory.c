@@ -47,7 +47,7 @@ hwaddr_t page_translate(lnaddr_t addr, size_t len) {
 	//	hwaddr_t hwaddr = (page.base << 12) + offset;
 		//Assert((hwaddr & 0xfff) + len == ((hwaddr + len) & 0xfff), "Fatal Error!!");
 		writeTLB(addr & 0xfffff000, page.base);
-		return (page.base << 12) + offset*2;
+		return (page.base << 12) + offset;
 	} else {
 		return addr;
 	}

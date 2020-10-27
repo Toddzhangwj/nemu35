@@ -25,7 +25,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	//hehe
 	int zero = 0;
 	uint32_t tmp = unalign_rw(temp + zero, 4) & (~0u >> ((4 - len) << 3));
-	printf("%d\n", tmp);
+	//printf("%d\n", tmp);
 	return tmp;
 }
 
